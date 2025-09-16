@@ -1,0 +1,138 @@
+/*
+    Stored Procedure: bronze.load_bronze
+    Description     : Load raw CSV data from CRM & ERP sources into Bronze schema tables.
+                      This procedure truncates the target tables and reloads fresh data.
+    Author          : [Your Name]
+    Date            : [YYYY-MM-DD]
+    Layer           : Bronze (Raw Data)
+*/
+
+CREATE OR ALTER PROCEDURE bronze.load_bronze AS
+BEGIN
+    -- Declare variables to measure load duration
+    DECLARE @starttime DATETIME, @endtime DATETIME;
+
+    BEGIN TRY
+        PRINT '----------------------------------------------------CRM Table-----------------------------------------------------';
+
+        /* ============================
+           Load CRM: Customer Info
+        ============================ */
+        SET @starttime = GETDATE();
+        PRINT 'Truncating Table : bronze.crm_cust_info';
+        TRUNCATE TABLE bronze.crm_cust_info;
+
+        PRINT 'Inserting Data Into Table : bronze.crm_cust_info';
+        BULK INSERT bronze.crm_cust_info
+        FROM 'D:\KARIR\DATA ANALYST\SQL\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_crm\cust_info.csv'
+        WITH (
+            FIRSTROW = 2,              -- Skip header row
+            FIELDTERMINATOR = ',',     -- CSV delimiter
+            TABLOCK                    -- Optimize for bulk load
+        );
+        SET @endtime = GETDATE();
+        PRINT 'Load Duration: ' + CAST(DATEDIFF(second, @starttime, @endtime) AS NVARCHAR) + ' Second';
+
+        /* ============================
+           Load CRM: Product Info
+        ============================ */
+        SET @starttime = GETDATE();
+        PRINT 'Truncating Table : bronze.crm_prd_info';
+        TRUNCATE TABLE bronze.crm_prd_info;
+
+        PRINT 'Inserting Data Into Table : bronze.crm_prd_info';
+        BULK INSERT bronze.crm_prd_info
+        FROM 'D:\KARIR\DATA ANALYST\SQL\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_crm\prd_info.csv'
+        WITH (
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
+        );
+        SET @endtime = GETDATE();
+        PRINT 'Load Duration: ' + CAST(DATEDIFF(second, @starttime, @endtime) AS NVARCHAR) + ' Second';
+
+        /* ============================
+           Load CRM: Sales Details
+        ============================ */
+        SET @starttime = GETDATE();
+        PRINT 'Truncating Table : bronze.crm_sls_details';
+        TRUNCATE TABLE bronze.crm_sls_details;
+
+        PRINT 'Inserting Data Into Table : bronze.crm_sls_details';
+        BULK INSERT bronze.crm_sls_details
+        FROM 'D:\KARIR\DATA ANALYST\SQL\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_crm\sales_details.csv'
+        WITH (
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
+        );
+        SET @endtime = GETDATE();
+        PRINT 'Load Duration: ' + CAST(DATEDIFF(second, @starttime, @endtime) AS NVARCHAR) + ' Second';
+
+        PRINT '----------------------------------------------------ERP Table-----------------------------------------------------';
+
+        /* ============================
+           Load ERP: Customer Data
+        ============================ */
+        SET @starttime = GETDATE();
+        PRINT 'Truncating Table : bronze.erp_cust_az12';
+        TRUNCATE TABLE bronze.erp_cust_az12;
+
+        PRINT 'Inserting Data Into Table : bronze.erp_cust_az12';
+        BULK INSERT bronze.erp_cust_az12
+        FROM 'D:\KARIR\DATA ANALYST\SQL\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_erp\CUST_AZ12.csv'
+        WITH (
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
+        );
+        SET @endtime = GETDATE();
+        PRINT 'Load Duration: ' + CAST(DATEDIFF(second, @starttime, @endtime) AS NVARCHAR) + ' Second';
+
+        /* ============================
+           Load ERP: Customer Location
+        ============================ */
+        SET @starttime = GETDATE();
+        PRINT 'Truncating Table : bronze.erp_loc_a101';
+        TRUNCATE TABLE bronze.erp_loc_a101;
+
+        PRINT 'Inserting Data Into Table : bronze.erp_loc_a101';
+        BULK INSERT bronze.erp_loc_a101
+        FROM 'D:\KARIR\DATA ANALYST\SQL\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_erp\LOC_A101.csv'
+        WITH (
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
+        );
+        SET @endtime = GETDATE();
+        PRINT 'Load Duration: ' + CAST(DATEDIFF(second, @starttime, @endtime) AS NVARCHAR) + ' Second';
+
+        /* ============================
+           Load ERP: Product Category
+        ============================ */
+        SET @starttime = GETDATE();
+        PRINT 'Truncating Table : bronze.erp_px_cat_g1v2';
+        TRUNCATE TABLE bronze.erp_px_cat_g1v2;
+
+        PRINT 'Inserting Data Into Table : bronze.erp_px_cat_g1v2';
+        BULK INSERT bronze.erp_px_cat_g1v2
+        FROM 'D:\KARIR\DATA ANALYST\SQL\sql-data-warehouse-project\sql-data-warehouse-project\datasets\source_erp\PX_CAT_G1V2.csv'
+        WITH (
+            FIRSTROW = 2,
+            FIELDTERMINATOR = ',',
+            TABLOCK
+        );
+        SET @endtime = GETDATE();
+        PRINT 'Load Duration: ' + CAST(DATEDIFF(second, @starttime, @endtime) AS NVARCHAR) + ' Second';
+
+    END TRY
+    BEGIN CATCH
+        -- Error handling block
+        PRINT '----------------------------------------------------';
+        PRINT 'Error Occured During Loading bronze Layer';
+        PRINT 'Error Message: ' + ERROR_MESSAGE();
+        PRINT 'Error Number : ' + CAST(ERROR_NUMBER() AS NVARCHAR);
+        PRINT 'Error State  : ' + CAST(ERROR_STATE() AS NVARCHAR);
+        PRINT '----------------------------------------------------';
+    END CATCH
+END;
