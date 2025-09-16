@@ -2,8 +2,6 @@
     Stored Procedure: bronze.load_bronze
     Description     : Load raw CSV data from CRM & ERP sources into Bronze schema tables.
                       This procedure truncates the target tables and reloads fresh data.
-    Author          : [Your Name]
-    Date            : [YYYY-MM-DD]
     Layer           : Bronze (Raw Data)
 */
 
