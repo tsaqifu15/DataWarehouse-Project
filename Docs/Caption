@@ -1,0 +1,16 @@
+Data Warehouse Project!
+
+In this project, I applied the ETL (Extract, Transform, Load) process to integrate data from multiple CRM & ERP sources. The workflow was divided into three main stages:
+
+🔹 Bronze (Extract) – Load raw CSV files into staging tables using DDL/DML & Bulk Insert, preserving data as-is.
+🔹 Silver (Transform) – Perform data quality checks, cleaning, validation, and standardization to ensure consistency.
+🔹 Gold (Load) – Build Dimension & Fact Views in a Star Schema, enabling reporting, dashboards, and business insights.
+
+This project demonstrates how raw data can be transformed into business-ready analytics, providing a strong foundation for decision-making.
+
+📊 Tech Stack: SQL Server (DDL, DML, Stored Procedures, Views)
+📂 Dataset: Advanced SQL Project
+
+👉 Check out my detailed slides to see the full ETL journey from raw data to insights!
+
+#DataWarehouse #ETL #SQL #Analytics #BusinessIntelligence
